@@ -1,2 +1,3 @@
 # tarea-tecnostock
-Tarea del profe
+Profesor: Luis Herrera
+Nombre Estudiante: Rodrigo Valdovinos
