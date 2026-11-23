@@ -1,0 +1,128 @@
+=====================================================================
+ TECNOSTOCK - INSTRUCCIONES (versión actualizada)
+ Sistema de inventario: PHP 8 + PDO + MySQL + Bootstrap 5
+=====================================================================
+
+REQUISITOS
+  - XAMPP con PHP 8 o superior (Apache + MySQL)
+  - Visual Studio Code (recomendado: extensión "PHP Intelephense")
+  - Git (para el control de versiones)
+  - Conexión a internet (Bootstrap se carga desde CDN)
+
+---------------------------------------------------------------------
+ 1. INSTALACIÓN (opción A: con Apache de XAMPP)
+---------------------------------------------------------------------
+  1. Descomprime tecnostock.zip dentro de:
+        C:\xampp\htdocs\
+     Debe quedar así:  C:\xampp\htdocs\tecnostock
+  2. Abre XAMPP y presiona "Start" en Apache y en MySQL.
+  3. Entra a  http://localhost/phpmyadmin
+     - Pestaña "Importar" > elige database.sql > "Continuar".
+  4. Abre la app en  http://localhost/tecnostock/
+
+  Usuario de prueba:
+        Correo: admin@tecnostock.cl
+        Clave:  admin123
+
+---------------------------------------------------------------------
+ 2. INSTALACIÓN (opción B: todo desde la terminal de VS Code)
+---------------------------------------------------------------------
+  1. Inicia SOLO MySQL desde el panel de XAMPP.
+  2. En VS Code: Archivo > Abrir carpeta > elige la carpeta tecnostock.
+  3. Abre la terminal con Ctrl+ñ (queda dentro de la carpeta) y ejecuta:
+
+     Importar la base de datos:
+        C:\xampp\mysql\bin\mysql.exe -u root --default-character-set=utf8mb4 -e "source database.sql"
+
+     Iniciar el servidor PHP:
+        C:\xampp\php\php.exe -S localhost:8000
+
+  4. Abre  http://localhost:8000
+     (con esta opción la carpeta no necesita estar en htdocs)
+
+---------------------------------------------------------------------
+ 3. SI YA HABÍAS IMPORTADO UNA VERSIÓN ANTERIOR
+---------------------------------------------------------------------
+  El script no se puede importar dos veces (el usuario ya existe).
+  Primero borra la base de datos:
+     - phpMyAdmin > base "tecnostock" > Operaciones >
+       "Eliminar la base de datos"
+     - o ejecuta:  DROP DATABASE tecnostock;
+  Luego vuelve a importar database.sql.
+  OJO: esto borra los productos y movimientos que hayas creado tú.
+
+---------------------------------------------------------------------
+ 4. QUÉ HACE LA APLICACIÓN
+---------------------------------------------------------------------
+  - Inicio: indicadores (productos, unidades, valor del inventario,
+    stock bajo, movimientos de hoy y de los últimos 7 días), stock por
+    categoría, productos más críticos y últimos movimientos.
+  - Productos: registrar, editar, listar, buscar (nombre, código o
+    categoría), desactivar y reactivar. Alerta de stock bajo.
+  - Categorías: registrar, editar, activar y desactivar.
+  - Movimientos: entradas y salidas con historial filtrable por
+    producto, tipo y fechas. El stock se actualiza automáticamente.
+  - Reposición: lista de productos bajo el mínimo con la cantidad
+    sugerida (hasta el doble del mínimo) y botón para registrar la
+    entrada.
+  - Exportar a CSV: productos, movimientos y lista de reposición
+    (abre directo en Excel).
+
+  Datos de ejemplo: 44 productos en 8 categorías (7 con stock bajo y
+  1 inactivo para probar los filtros).
+
+  Aviso: el precio se escribe sin separador de miles
+  (12990 o 12990.50, no 12.990).
+
+---------------------------------------------------------------------
+ 5. REGLAS DE NEGOCIO
+---------------------------------------------------------------------
+  1. El código de producto no se repite.
+  2. Precio, stock y cantidades no pueden ser negativos.
+  3. Todo movimiento registra fecha, tipo, cantidad, producto y usuario.
+  4. Una salida no puede dejar el stock bajo cero.
+  5. Los productos no se eliminan: se desactivan.
+  6. El stock se actualiza solo después de cada movimiento válido.
+
+---------------------------------------------------------------------
+ 6. SOLUCIÓN DE PROBLEMAS
+---------------------------------------------------------------------
+  - Apache no inicia:
+      El puerto 80 suele estar ocupado (Skype o IIS). Cambia el puerto
+      en XAMPP > Apache > Config > httpd.conf y entra con
+      localhost:PUERTO. O usa la opción B (php -S).
+  - "No se pudo conectar a la base de datos":
+      MySQL no está iniciado, o tu usuario/clave no son "root" sin
+      clave. Ajusta los datos en config.php.
+  - La página se ve sin estilos:
+      Falta internet (Bootstrap viene por CDN).
+  - Los cambios no se ven:
+      Guarda el archivo (Ctrl+S) y recarga con Ctrl+F5.
+  - Error al importar database.sql ("ya existe"):
+      Ver la sección 3.
+  - Los acentos se ven raros:
+      Importa database.sql desde phpMyAdmin (usa UTF-8) o con la
+      opción --default-character-set=utf8mb4 de la sección 2.
+
+---------------------------------------------------------------------
+ 7. ARCHIVOS DEL PROYECTO
+---------------------------------------------------------------------
+  database.sql             Esquema y datos de ejemplo
+  config.php               Conexión PDO (editar si cambia la clave)
+  auth.php                 Sesión, CSRF y funciones auxiliares
+  login.php / logout.php   Acceso
+  inicio.php               Panel con indicadores
+  productos.php            Listado, búsqueda y alerta de stock bajo
+  producto_form.php        Crear y editar producto
+  producto_desactivar.php  Desactivar producto
+  producto_reactivar.php   Reactivar producto
+  categorias.php           Listado y estado de categorías
+  categoria_form.php       Crear y editar categoría
+  movimientos.php          Entradas, salidas e historial con filtros
+  reposicion.php           Reposición sugerida
+  exportar.php             Exportación a CSV
+  includes/                Cabecera, pie y consultas compartidas
+  js/validaciones.js       Validaciones en el navegador
+  css/style.css            Ajustes de estilo
+
+=====================================================================
