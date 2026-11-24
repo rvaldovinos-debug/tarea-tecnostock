@@ -1,0 +1,6 @@
+/* Ajustes mínimos sobre Bootstrap */
+.table td, .table th { vertical-align: middle; }
+.table-responsive { background: #fff; border: 1px solid #dee2e6; border-radius: .5rem; }
+.table-responsive .table { margin-bottom: 0; }
+.form-label { font-weight: 600; }
+.login-card { width: 100%; max-width: 380px; }
